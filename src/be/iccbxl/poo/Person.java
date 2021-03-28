@@ -106,7 +106,7 @@ public class Person {
 	}
 
 	/**
-	 * Renvoie une chaine de caratère constituer de l'id, du nom, du nombre maximum de livres empruntable,
+	 * Renvoie une chaîne de caractères constituée de l'id, du nom, du nombre maximum de livres empruntables,
 	 * la date d'inscription et le nombre de livres empruntés
 	 */
 	@Override
