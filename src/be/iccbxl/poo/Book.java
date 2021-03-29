@@ -1,6 +1,7 @@
 package be.iccbxl.poo;
 
 import java.time.LocalDate;
+import java.time.Period;
 
 public class Book {
 
@@ -9,7 +10,7 @@ public class Book {
 	private int totalPages;
 	private int loanPeriod;
 	private double rentalPrice;
-	LocalDate borrowingDate;
+	private LocalDate borrowingDate;
 	private String language;
 	private Person borrower;
 	// Necessaire de spécifier le type du livre ?
@@ -21,7 +22,7 @@ public class Book {
 		this.titre = titre;
 		this.author = author;
 		this.totalPages = totalPages;
-		// Periode fixe ? période communiquée par le membre ?
+		// Période fixe ? période communiquée par le membre ?
 		this.loanPeriod = 30;
 		// Dépend du type ? prix fixe  ? prix en foncton de la periode ?
 		this.rentalPrice = 5;
@@ -31,9 +32,15 @@ public class Book {
 		this.bookType = bookType;
 	}
 	
-	public LocalDate computeReturnDate(LocalDate borrowingDate, int loanPeriod) {
+	public int computeRemainingDays(Book book) {
+		Period nbOfDays;
+		nbOfDays = LocalDate.now().until(book.getBorrowingDate().plusDays(book.getLoanPeriod()));
+		return nbOfDays.getDays();
+	}
+	
+	public LocalDate computeReturnDate(Book book) {
 		LocalDate returnDate = null;
-		returnDate = borrowingDate.plusDays(loanPeriod);
+		returnDate = book.getBorrowingDate().plusDays(book.getLoanPeriod());
 		return returnDate;
 	}
 

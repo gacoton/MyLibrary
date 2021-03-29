@@ -125,7 +125,7 @@ public class Person {
 	public void borrows(Book book) {
 		this.books.add(book);
 		book.setBorrower(this);
-		book.borrowingDate = LocalDate.now();
+		book.setBorrowingDate(LocalDate.now());
 	}
 
 	/**
@@ -136,7 +136,7 @@ public class Person {
 	public void returns(Book book) {
 		this.books.remove(book);
 		book.setBorrower(null);
-		book.borrowingDate = null;
+		book.setBorrowingDate(null);
 	}
 	
 }
