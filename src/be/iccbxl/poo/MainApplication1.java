@@ -1,115 +1,34 @@
 package be.iccbxl.poo;
 
-import java.util.Scanner;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class MainApplication1 {
-
-	public static void mainMenu () {
-		String[] menuP = {"1. Ajouter un membre","2. Ajouter un livre","3. Emprunter un livre","4. Afficher les statistiques","0. Quitter"};
-		for(String a : menuP) {
-			System.out.println(a);
-		}
-	}
+	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	static MyLibrary myLibrary = new MyLibrary("test");
 	
-	
-	public static int onlineBookNb(String[][] livres) {
-		int cpt = 0;
-		for(int i=0; i<livres.length;i++) {
-			if(livres[i][1].equals("OnlineBook")) {
-				cpt++;
-			}
-		}
-		return cpt;
-	}
-	
-	public static int graphicNovelNb(String[][] livres) {
-		int cpt = 0;
-		for(int i=0; i<livres.length;i++) {
-			if(livres[i][1].equals("GraphicNovel")) {
-				cpt++;
-			}
-		}
-		return cpt;
-	}
-	
-	public static int borrowersNb(String[][] membres) {
-		int cpt = 0;
-		for(int i=0; i<membres.length;i++) {
-			if(Integer.parseInt(membres[i][1]) != 0) {
-				cpt++;
-			}
-		}
-		return cpt;
-	}
-	
-	
-	public static int borrowedBooksNb(String[][] membres) {
-		int nb = 0;
-		for(int i=0; i<membres.length;i++) {
-			nb += Integer.parseInt(membres[i][1]);
-		}
-		return nb;
-	}
-	
-//	public static int overdueBooksNb(String [][] livres) {
-//		int nb;
-//		return nb
-//	}
-//	
 	public static void main(String[] args) {
 		
-		//name - borrowedBookNb -registrationDate
-		String[][] membres = new String[3][3];
-		membres[0][0] = "John";
-		membres[0][1] = "2";
-		membres[0][2] = "2021-01-05";
-		membres[1][0] = "Jacob";
-		membres[1][1] = "1";
-		membres[1][2] = "2021-01-25";
-		membres[2][0] = "Louise";
-		membres[2][1] = "0";
-		membres[2][2] = "2021-02-15";
-		
-		//title - bookType - loanPeriod - borrowingDate
-		String[][] livres = new String[5][4];
-		livres[0][0] = "Dracula";
-		livres[0][1] = "OnlineBook";
-		livres[0][2] = "";
-		livres[0][3] = "2021-02-15";
-		livres[1][0] = "Frankenstein";
-		livres[1][1] = "OnlineBook";
-		livres[1][2] = "";
-		livres[1][3] = "2021-02-27";
-		livres[2][0] = "Batman";
-		livres[2][1] = "GraphicNovel";
-		livres[2][2] = "";
-		livres[2][3] = "2021-02-20";
-		livres[3][0] = "Sin City";
-		livres[3][1] = "GraphicNovel";
-		livres[3][2] = "";
-		livres[3][3] = "2021-03-01";
-		livres[4][0] = "Watchmen";
-		livres[4][1] = "GraphicNovel";
-		livres[4][2] = "";
-		livres[4][3] = "2021-02-03";
-		
-		
+		//load les 2 fichiers
+		myLibrary.loadAll();
+
 		int number;
-		Scanner s = new Scanner(System.in);
-		
 		
 		do {
 			mainMenu();
 			System.out.println("Faite votre choix : ");
 			do {
 				try {
-					number = Integer.parseInt(s.nextLine());
+					number = Integer.parseInt(br.readLine());
 					if(number<0 || number>4) {
 						System.out.println("Veuiller faire un choix entre 0 et 4");
 						number = -99;
 					}
 				} catch (NumberFormatException e){
 					System.out.println("Veuillez entre un nombre entier !");
+					number = -99;
+				} catch (IOException e) {
 					number = -99;
 				}
 			
@@ -118,20 +37,29 @@ public class MainApplication1 {
 			switch(number) {
 				case 0 :
 					System.out.println("Application terminée");
-					s.close();
+				try {
+					br.close();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+				// pour sauvegarder avant de quitter
+//				myLibrary.saveBooks("data/books.csv");
+//				myLibrary.saveMembers("data/members.csv");
 					break;
 				case 1 :
+					addNewMember();
 					break;
 				case 2 :
+					System.out.println(myLibrary.getPeople());
 					break;
 				case 3 :
 					break;
 				case 4 :
-					System.out.println("Nombre total de livres et membres : "+livres.length+" et "+membres.length);
-					System.out.println("Nombre de livres électroniques et de romans graphiques : "+onlineBookNb(livres)+" et "+graphicNovelNb(livres));
-					System.out.println("Nombres de membres qui ont un livre en emprunt : "+borrowersNb(membres));
-					System.out.println("Nombre de livres empruntés : "+borrowedBooksNb(membres));
-//					System.out.println("nombre de livres en retard : ");
+					System.out.println("Nombre total de livres et membres : "+myLibrary.getBooksNb()+" et "+myLibrary.getMembersNb());
+					System.out.println("Nombre de livres électroniques et de romans graphiques : "+myLibrary.getOnlineBooksNb()+" et "+myLibrary.getGraphicNovelNb());
+					System.out.println("Nombres de membres qui ont un livre en emprunt : "+myLibrary.getBorrowersNb());
+					System.out.println("Nombre de livres empruntés : "+myLibrary.getBorrowedBooksNb());
+					System.out.println("nombre de livres en retard : "+myLibrary.getOverdueBooksNb());
 					break;
 				//default:
 			}		
@@ -141,5 +69,89 @@ public class MainApplication1 {
 		
 		
 	}
+	
+	//afficher le menu 
+	public static void mainMenu () {
+		String[] menuP = {"1. Ajouter un membre","2. Ajouter un livre","3. Emprunter un livre","4. Afficher les statistiques","0. Quitter"};
+		for(String a : menuP) {
+			System.out.println(a);
+		}
+	}
+	
+	// ajouter un nouveau membre
+	 public static void addNewMember() {
+
+		 String nom;
+		 Byte maxBooksNb;
+		 Byte choix;
+		 
+		 System.out.println("Veuillez entrer le nom du membre");
+		 do {
+			 try {
+				nom = br.readLine();
+				if(nom.isEmpty()) {
+					 System.out.println("Le nom ne peut pas être vide");
+					 nom = null;
+				 } else if(nom.isBlank()) {
+					 System.out.println("Le nom ne peut être uniquement constitué d'espace");
+					 nom = null;
+				 }
+			} catch (IOException e) {
+				System.out.println("Une erreur est survenue.");
+				nom = null;
+			}
+			 
+			 
+		 } while (nom == null);
+		 
+		 System.out.println("Quel est le nombre de livres maximum que le membre peut emprunter ?");
+		 do {
+				try {
+					maxBooksNb = Byte.parseByte(br.readLine());
+					if(maxBooksNb<0) {
+						System.out.println("le nombre de livres maximum ne peut pas être négatif");
+						maxBooksNb = -1;
+					}
+				} catch (NumberFormatException e){
+					System.out.println("Veuillez entre un nombre entier !");
+					maxBooksNb = -1;
+				} catch (IOException e) {
+					System.out.println("Une erreur est survenue.");
+					maxBooksNb = -1;
+				}
+			
+			} while (maxBooksNb == -1);
+		 
+		 
+		 Person p = new Person(java.util.UUID.randomUUID(),nom);
+		 p.setMaxBooks(maxBooksNb);
+		 
+		 System.out.println("Veuillez confirmer la création du membre :");
+		 System.out.println(p);
+		 System.out.println("Entrez 1 pour confirmer ou 2 pour annuler ");
+		 do {
+				try {
+					choix = Byte.parseByte(br.readLine());
+					if(choix == 1) {
+						myLibrary.addPerson(p);
+						System.out.println("Le membre a bien été créé !");
+					} else if(choix == 2) {
+						System.out.println("Annulation de la création");
+					} else {
+						System.out.println("Seul 1 ou 2 est accepter");
+						choix = -1;
+					}
+				} catch (NumberFormatException e){
+					System.out.println("Veuillez entre un nombre entier !");
+					choix = -1;
+				} catch (IOException e) {
+					System.out.println("Une erreur est survenue.");
+					choix = -1;
+				}
+			
+			} while (choix == -1);
+		 	 
+		
+	 }
 
 }

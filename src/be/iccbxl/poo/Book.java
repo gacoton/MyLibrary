@@ -5,7 +5,7 @@ import java.time.Period;
 
 public class Book {
 
-	private String titre;
+	private String title;
 	private String author;
 	private int totalPages;
 	private int loanPeriod;
@@ -13,18 +13,15 @@ public class Book {
 	private LocalDate borrowingDate;
 	private String language;
 	private Person borrower;
-	// Necessaire de spécifier le type du livre ?
 	private String bookType;
 	
 	
-	public Book(String titre, String author, int totalPages, String language, String bookType) {
+	public Book(String title, String author, int totalPages, String language, String bookType) {
 		
-		this.titre = titre;
+		this.title = title;
 		this.author = author;
 		this.totalPages = totalPages;
-		// Période fixe ? période communiquée par le membre ?
 		this.loanPeriod = 30;
-		// Dépend du type ? prix fixe  ? prix en foncton de la periode ?
 		this.rentalPrice = 5;
 		this.borrowingDate = null;
 		this.language = language;
@@ -76,8 +73,8 @@ public class Book {
 		this.borrower = borrower;
 	}
 
-	public String getTitre() {
-		return titre;
+	public String getTitle() {
+		return title;
 	}
 
 	public String getAuthor() {
@@ -96,5 +93,11 @@ public class Book {
 		return bookType;
 	}
 	
+	@Override
+	public String toString() {
+		
+		return "Book [" + title + ": " + author +" "+ totalPages+ " pages, langue "+language+", type "+bookType+" "
+		+rentalPrice+" "+borrowingDate+" "+borrower+" "+loanPeriod+"]";
+	}
 	
 }

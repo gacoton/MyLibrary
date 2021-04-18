@@ -116,7 +116,19 @@ public class Person {
 				+ registrationDate + ")\n books="
 				+ (books != null ? books.subList(0, Math.min(books.size(), maxLen)) : null) + "]";
 	}
+
+//	public void setBooks(ArrayList<Book> books) {
+//		this.books = books;
+//	}
 	
+	/**
+	 * Modifie la date d'inscription du membre
+	 * @param La date d'inscription du membre
+	 */
+	public void setRegistrationDate(LocalDate registrationDate) {
+		this.registrationDate = registrationDate;
+	}
+
 	/**
 	 * Ajoute un livre à la liste de livres empruntés du membre
 	 * Modifie les attributs borrower et borrowing date du livre emprunté
